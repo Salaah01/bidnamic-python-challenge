@@ -1,0 +1,11 @@
+Django==4.0.1
+
+# This is to make it easier to work with APIs. The alternative is to use
+# Django JSON response.
+djangorestframework==3.13.1
+
+# Postgresql driver
+psycopg2==2.9.3
+
+# To be able to read environment variables from .env file
+python-dotenv==0.19.2
