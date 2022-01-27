@@ -19,3 +19,12 @@ class SearchTerm(models.Model):
 
     def __str__(self):
         return f"({self.date}) {self.ad_group}"
+
+    def roas(self) -> float:
+        """Calculates the Return On Ad Spend (RoAS) for the search term.
+        Returns:
+            float: The RoAS for the search term.
+        """
+        if self.cost == 0:
+            return self.conversion_value
+        return self.conversion_value / self.cost
