@@ -1,11 +1,18 @@
+# Core web framework
 Django==4.0.1
 
 # This is to make it easier to work with APIs. The alternative is to use
 # Django JSON response.
 djangorestframework==3.13.1
 
+# For loading data in bulk. Benchmarks suggest Python's csv module is faster
+# for small datasets, but pandas is several times faster for large datasets.
+pandas==1.4.0
+
 # Postgresql driver
 psycopg2==2.9.3
-
 # To be able to read environment variables from .env file
 python-dotenv==0.19.2
+
+# To facilitate bulk inserts using pandas dataframe `to_sql` method
+sqlalchemy==1.4.31
