@@ -25,7 +25,10 @@ def base_response(
     Returns:
         A dictionary containing the response.
     """
-    return {"metadata": utils.build_metadata(request, metadata), "data": data or {}}
+    return {
+        "metadata": utils.build_metadata(request, metadata),
+        "data": data or {},
+    }
 
 
 def success(

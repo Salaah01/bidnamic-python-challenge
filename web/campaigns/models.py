@@ -30,7 +30,10 @@ class Campaign(models.Model):
         df = clean_data(
             dataframe,
             cls,
-            [cleaning_methods.RemoveDuplicates, cleaning_methods.RenameHeaders],
+            [
+                cleaning_methods.RemoveDuplicates,
+                cleaning_methods.RenameHeaders,
+            ],
         )
         db_table = cls._meta.db_table
 
@@ -67,7 +70,7 @@ class AdGroup(models.Model):
     status = models.CharField(max_length=50)
 
     class DataCleaner:
-        remove_duplicates_subset_fields = ["ad_group_id", 'campaign_id']
+        remove_duplicates_subset_fields = ["ad_group_id", "campaign_id"]
         rename_headers_header_map = {
             "ad_group_id": "id",
         }

@@ -61,8 +61,7 @@ class TestRemoveDuplicates(SimpleTestCase):
         )
 
         remove_duplicates = methods.RemoveDuplicates(
-            dataframe,
-            campaign_models.AdGroup
+            dataframe, campaign_models.AdGroup
         )
         remove_duplicates.clean()
         results = remove_duplicates.dataframe.reset_index(drop=True)
@@ -82,8 +81,7 @@ class TestRemoveDuplicates(SimpleTestCase):
         )
 
     def test_search_terms(self):
-        """Test that the data for the `SearchTerm` model is cleaned correctly.
-        """
+        """Test that the data for the `SearchTerm` model is cleaned correctly."""
         dataframe = pd.DataFrame(
             {
                 "ad_group_id": [1, 2, 1],

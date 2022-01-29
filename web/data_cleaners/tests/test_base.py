@@ -27,6 +27,7 @@ class FirstTwoRowsStrategy(base.CleaningStrategy):
 
 # Unittests
 
+
 class TestCleaningStrategy(SimpleTestCase):
     """Unittests for the `CleaningStrategy` class."""
 
@@ -36,12 +37,10 @@ class TestCleaningStrategy(SimpleTestCase):
         """
 
         instance = SimpleNamespace(
-            dataframe=None,
-            model=SimpleNamespace(DataCleaner=1)
+            dataframe=None, model=SimpleNamespace(DataCleaner=1)
         )
         self.assertEqual(
-            base.CleaningStrategy.can_use_cleaner(instance),
-            (True, None)
+            base.CleaningStrategy.can_use_cleaner(instance), (True, None)
         )
 
     def test_can_use_cleaner_fail(self):
@@ -49,13 +48,10 @@ class TestCleaningStrategy(SimpleTestCase):
         model does not have the attributes the method expects.
         """
 
-        instance = SimpleNamespace(
-            dataframe=None,
-            model=SimpleNamespace()
-        )
+        instance = SimpleNamespace(dataframe=None, model=SimpleNamespace())
         self.assertEqual(
             base.CleaningStrategy.can_use_cleaner(instance),
-            (False, "The model does not have a DataCleaner class.")
+            (False, "The model does not have a DataCleaner class."),
         )
 
     def test_validate_model_pass(self):
@@ -66,7 +62,7 @@ class TestCleaningStrategy(SimpleTestCase):
         instance = SimpleNamespace(
             dataframe=None,
             model=SimpleNamespace(DataCleaner=1),
-            can_use_cleaner=lambda: (True, None)
+            can_use_cleaner=lambda: (True, None),
         )
         base.CleaningStrategy.validate_model(instance)
 
@@ -78,7 +74,7 @@ class TestCleaningStrategy(SimpleTestCase):
         instance = SimpleNamespace(
             dataframe=None,
             model=SimpleNamespace(),
-            can_use_cleaner=lambda: (False, 'Failed')
+            can_use_cleaner=lambda: (False, "Failed"),
         )
         with self.assertRaises(NotImplementedError):
             base.CleaningStrategy.validate_model(instance)

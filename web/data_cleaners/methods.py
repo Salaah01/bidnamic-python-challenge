@@ -6,7 +6,6 @@ from .base import CleaningStrategy
 
 
 class RemoveDuplicates(CleaningStrategy):
-
     def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
         """Checks if the model can use the cleaner.
 
@@ -20,20 +19,18 @@ class RemoveDuplicates(CleaningStrategy):
         if not can_use[0]:
             return can_use
         can_use = hasattr(
-            self.model.DataCleaner,
-            "remove_duplicates_subset_fields"
+            self.model.DataCleaner, "remove_duplicates_subset_fields"
         )
         if not can_use:
             return (
                 False,
-                "Model missing `DataCleaner.remove_duplicates_subset_fields` \
-                    attribute.",
+                "Model missing `DataCleaner.remove_duplicates_subset_fields`  "
+                "                   attribute.",
             )
         return True, None
 
     def clean(self) -> pd.DataFrame:
-        """Deletes duplicate data from the dataframe keeping on the last row.
-        """
+        """Deletes duplicate data from the dataframe keeping on the last row."""
         self.validate_model()
         self.dataframe.drop_duplicates(
             subset=self.model.DataCleaner.remove_duplicates_subset_fields,
@@ -43,7 +40,6 @@ class RemoveDuplicates(CleaningStrategy):
 
 
 class RenameHeaders(CleaningStrategy):
-
     def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
         """Checks if the model can use the cleaner.
 
@@ -56,15 +52,12 @@ class RenameHeaders(CleaningStrategy):
         can_use = super().can_use_cleaner()
         if not can_use[0]:
             return can_use
-        can_use = hasattr(
-            self.model.DataCleaner,
-            "rename_headers_header_map"
-        )
+        can_use = hasattr(self.model.DataCleaner, "rename_headers_header_map")
         if not can_use:
             return (
                 False,
-                "Model missing `DataCleaner.rename_headers_header_map` \
-                    attribute.",
+                "Model missing `DataCleaner.rename_headers_header_map`        "
+                "             attribute.",
             )
         return True, None
 

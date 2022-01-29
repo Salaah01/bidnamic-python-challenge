@@ -20,8 +20,8 @@ class SearchTerm(models.Model):
     class DataCleaner:
         remove_duplicates_subset_fields = [
             "ad_group_id",
-            'campaign_id',
-            'search_term'
+            "campaign_id",
+            "search_term",
         ]
         remove_columns = ["campaign_id"]
 

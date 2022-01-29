@@ -60,7 +60,9 @@ class CleaningStrategy(ABC):
 
 
 def clean_data(
-    dataframe: pd.DataFrame, model: Model, strategies: _t.List[CleaningStrategy]
+    dataframe: pd.DataFrame,
+    model: Model,
+    strategies: _t.List[CleaningStrategy],
 ) -> pd.DataFrame:
     """This function cleans the data using the given strategies.
 

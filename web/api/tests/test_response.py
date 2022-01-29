@@ -29,7 +29,10 @@ class TestBaseResponse(SimpleTestCase):
         )
         self.assertEqual(
             res,
-            {"metadata": {"query_params": {"foo": "bar"}, "baz": "qux"}, "data": {}},
+            {
+                "metadata": {"query_params": {"foo": "bar"}, "baz": "qux"},
+                "data": {},
+            },
         )
 
 
@@ -50,7 +53,8 @@ class TestSuccessResponse(SimpleTestCase):
         # maintain the API response format.
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            res.data, {"metadata": {"query_params": {"foo": "bar"}}, "data": {}}
+            res.data,
+            {"metadata": {"query_params": {"foo": "bar"}}, "data": {}},
         )
 
     def test_success_response_with_args(self):
@@ -66,7 +70,10 @@ class TestSuccessResponse(SimpleTestCase):
         self.assertEqual(
             res.data,
             {
-                "metadata": {"query_params": {"foo": "bar"}, "results_count": 2},
+                "metadata": {
+                    "query_params": {"foo": "bar"},
+                    "results_count": 2,
+                },
                 "data": {"a": 1, "b": 2},
             },
         )
@@ -86,9 +93,13 @@ class TestSuccessResponse(SimpleTestCase):
         # Test with string
         res = response.success(request=req, status=200, data="foo")
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data, {"metadata": expected_metadata, "data": "foo"})
+        self.assertEqual(
+            res.data, {"metadata": expected_metadata, "data": "foo"}
+        )
 
         # Test with list
         res = response.success(request=req, status=200, data=[1, 2, 3])
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data, {"metadata": expected_metadata, "data": [1, 2, 3]})
+        self.assertEqual(
+            res.data, {"metadata": expected_metadata, "data": [1, 2, 3]}
+        )

@@ -24,11 +24,13 @@ class TestCampaign(TestCase):
             status="c",
         )
 
-        df = pd.DataFrame({
-            "campaign_id": [50, 100, 50],
-            "structure_value": ["a", "a", "a"],
-            "status": ["ENABLED", "ENABLED", "DISABLED"],
-        })
+        df = pd.DataFrame(
+            {
+                "campaign_id": [50, 100, 50],
+                "structure_value": ["a", "a", "a"],
+                "status": ["ENABLED", "ENABLED", "DISABLED"],
+            }
+        )
 
         campaign_models.Campaign.load_from_dataset(df)
         campaigns = campaign_models.Campaign.objects.all()

@@ -21,7 +21,11 @@ class TestBaseException(SimpleTestCase):
 
         self.assertEqual(
             res,
-            {"metadata": {"query_params": {"foo": "bar"}}, "data": {}, "error": None},
+            {
+                "metadata": {"query_params": {"foo": "bar"}},
+                "data": {},
+                "error": None,
+            },
         )
 
     def test_base_exception_with_args(self):
