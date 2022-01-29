@@ -1,6 +1,6 @@
 """Unittests for the `methods` module."""
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 from django.contrib.contenttypes.models import ContentType
 import pandas as pd
 from campaigns import models as campaign_models
@@ -105,6 +105,49 @@ class TestRemoveDuplicates(SimpleTestCase):
                 "search_term": ["a", "a"],
                 "cost": [2, 3],
                 "status": ["ENABLED", "DISABLED"],
+            }
+        )
+
+        self.assertTrue(
+            results.equals(expected_results),
+            f"\nActual:\n{results}\nExpected:\n{expected_results}",
+        )
+
+
+class TestFilterValidForeignKeys(TestCase):
+    """Unittests for the `FilterValidForeignKeys` class."""
+
+    def test_ad_group(self):
+        """Test that the `clean` removes the correct data when being used for
+        the `campaign_models.AdGroup` class.
+        """
+
+        # Load the Campaign model with data as the AdGroup model contains a
+        # foreign key to the Campaign model.
+        for i in (50, 100):
+            campaign_models.Campaign.objects.create(
+                id=i,
+                structure_value="a",
+                status="ENABLED",
+            ).save()
+
+        dataframe = pd.DataFrame(
+            {
+                "ad_group_id": [1, 2, 1],
+                "campaign_id": [50, 100, 200],
+            }
+        )
+
+        filter_valid_fks = methods.FilterValidForeignKeys(
+            dataframe, campaign_models.AdGroup
+        )
+        filter_valid_fks.clean()
+        results = filter_valid_fks.dataframe.reset_index(drop=True)
+
+        expected_results = pd.DataFrame(
+            {
+                "ad_group_id": [1, 2],
+                "campaign_id": [50, 100],
             }
         )
 

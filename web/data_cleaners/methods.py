@@ -6,6 +6,8 @@ from .base import CleaningStrategy
 
 
 class RemoveDuplicates(CleaningStrategy):
+    """Deletes duplicate data from the dataframe keeping on the last row."""
+
     def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
         """Checks if the model can use the cleaner.
 
@@ -25,12 +27,12 @@ class RemoveDuplicates(CleaningStrategy):
             return (
                 False,
                 "Model missing `DataCleaner.remove_duplicates_subset_fields`  "
-                "                   attribute.",
+                "attribute.",
             )
         return True, None
 
     def clean(self) -> pd.DataFrame:
-        """Deletes duplicate data from the dataframe keeping on the last row."""
+        """Executes the cleaning task."""
         self.validate_model()
         self.dataframe.drop_duplicates(
             subset=self.model.DataCleaner.remove_duplicates_subset_fields,
@@ -40,6 +42,8 @@ class RemoveDuplicates(CleaningStrategy):
 
 
 class RenameHeaders(CleaningStrategy):
+    """Renames the headers of the dataframe."""
+
     def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
         """Checks if the model can use the cleaner.
 
@@ -56,15 +60,68 @@ class RenameHeaders(CleaningStrategy):
         if not can_use:
             return (
                 False,
-                "Model missing `DataCleaner.rename_headers_header_map`        "
-                "             attribute.",
+                "Model missing `DataCleaner.rename_headers_header_map` "
+                "attribute.",
             )
         return True, None
 
     def clean(self) -> pd.DataFrame:
-        """Renames the headers of the dataframe."""
+        """Executes the cleaning task."""
         self.validate_model()
         self.dataframe.rename(
             columns=self.model.DataCleaner.rename_headers_header_map,
             inplace=True,
         )
+
+
+class FilterValidForeignKeys(CleaningStrategy):
+    """Where a data that is being imported contains foreign key(s), check that
+    the respective primary key exists in the database table which the foreign
+    key is associated with.
+    """
+
+    def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
+        """Checks if the model can use the cleaner.
+
+        Returns:
+            A tuple containing a boolean indicating if the cleaning strategy
+            can be used and a string containing an error message if the
+            cleaning strategy cannot be used. If the cleaning strategy can be
+            used, the error message will be None.
+        """
+        can_use = super().can_use_cleaner()
+        if not can_use[0]:
+            return can_use
+        can_use = hasattr(self.model.DataCleaner, "fk_map")
+        if not can_use:
+            return (
+                False,
+                "Model missing `DataCleaner.fk_map` attribute.",
+            )
+        return True, None
+
+    def clean(self):
+        """Executes the cleaning task."""
+        self.validate_model()
+
+        columns = list(self.model.DataCleaner.fk_map.keys())
+
+        for column in columns:
+            model = self.model.DataCleaner.fk_map[column]["model"]
+            field = self.model.DataCleaner.fk_map[column]["field"]
+
+            # Get a set of all the primary keys from the model
+            pk_set = set(model.objects.values_list(field, flat=True))
+
+            # Get a set of all the foreign keys from the dataframe
+            fk_set = set(self.dataframe[column].unique())
+
+            # Check if the foreign keys are valid
+            invalid_fk_set = fk_set - pk_set
+            # Remove rows that contain invalid foreign keys
+            self.dataframe.drop(
+                self.dataframe[
+                    self.dataframe[column].isin(invalid_fk_set)
+                ].index,
+                inplace=True,
+            )
