@@ -23,6 +23,28 @@ class CleaningStrategy(ABC):
         self.model = model
         self.dataset_has_been_reversed = False
 
+    def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
+        """Returns True if the cleaning strategy can be used.
+
+        Returns:
+            A tuple containing a boolean indicating if the cleaning strategy
+            can be used and a string containing an error message if the
+            cleaning strategy cannot be used. If the cleaning strategy can be
+            used, the error message will be None.
+        """
+        can_use = hasattr(self.model, "DataCleaner")
+        if not can_use:
+            return False, "The model does not have a DataCleaner class."
+        return True, None
+
+    def validate_model(self) -> None:
+        """Validates if the model can run a cleaning strategy. If not, raise
+        an error.
+        """
+        can_use, error_message = self.can_use_cleaner()
+        if not can_use:
+            raise NotImplementedError(error_message)
+
     @abstractmethod
     def clean(self) -> pd.DataFrame:
         """This method cleans the data and returns a cleaned dataframe

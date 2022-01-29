@@ -13,6 +13,3 @@ pandas==1.4.0
 psycopg2==2.9.3
 # To be able to read environment variables from .env file
 python-dotenv==0.19.2
-
-# To facilitate bulk inserts using pandas dataframe `to_sql` method
-sqlalchemy==1.4.31

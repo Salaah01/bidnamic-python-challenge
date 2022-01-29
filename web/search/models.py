@@ -17,6 +17,14 @@ class SearchTerm(models.Model):
     class Meta:
         ordering = ("-date",)
 
+    class DataCleaner:
+        remove_duplicates_subset_fields = [
+            "ad_group_id",
+            'campaign_id',
+            'search_term'
+        ]
+        remove_columns = ["campaign_id"]
+
     def __str__(self):
         return f"({self.date}) {self.ad_group}"
 
