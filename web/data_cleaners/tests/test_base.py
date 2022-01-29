@@ -1,9 +1,7 @@
 """Unitests for the `base` module."""
 
-import os
 import pandas as pd
 from django.test import SimpleTestCase
-from django.conf import settings
 from .. import base
 
 
@@ -73,7 +71,5 @@ class TestCleanData(SimpleTestCase):
         )
 
         dataframe_copy = dataframe.copy()
-
         base.clean_data(dataframe, None, [ReverseStrategy])
-
         self.assertTrue(dataframe.equals(dataframe_copy))
