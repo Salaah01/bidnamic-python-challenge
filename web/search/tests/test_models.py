@@ -13,7 +13,7 @@ class TestSearchTerm(TransactionTestCase):
         """Test that the method returns a `str` instance."""
         self.assertIsInstance(str(get_search_term()), str)
 
-    def test_roas(self):
+    def test_calc_roas(self):
         """Test that the method calculates the RoAS for a search term
         correctly.
         """
@@ -21,9 +21,9 @@ class TestSearchTerm(TransactionTestCase):
             cost=0.5,
             conversion_value=2.0,
         )
-        self.assertEqual(search_term.roas(), 4.0)
+        self.assertEqual(search_term.calc_roas(), 4.0)
 
-    def test_roas_0_cost(self):
+    def test_calc_roas_0_cost(self):
         """Test that the method does not run into a ZeroDivisionError when
         the cost is 0.
         """
@@ -31,7 +31,7 @@ class TestSearchTerm(TransactionTestCase):
             cost=0.0,
             conversion_value=2.0,
         )
-        self.assertEqual(search_term.roas(), 2.0)
+        self.assertEqual(search_term.calc_roas(), 2.0)
 
     def test_load_from_dataframe(self):
         """Test that the method loads the data from a dataframe correctly."""

@@ -16,6 +16,7 @@ class SearchTerm(models.Model):
     conversion_value = models.DecimalField(max_digits=10, decimal_places=2)
     conversions = models.PositiveIntegerField()
     search_term = models.CharField(max_length=255)
+    roas = models.FloatField(blank=True)
 
     class Meta:
         ordering = ("-date",)
@@ -40,6 +41,12 @@ class SearchTerm(models.Model):
 
     def __str__(self):
         return f"({self.date}) {self.ad_group}"
+
+    def save(self, *args, **kwargs):
+        """If `roas` is not set, calculate it before saving."""
+        if not self.roas:
+            self.roas = self.calc_roas()
+        super().save(*args, **kwargs)
 
     @classmethod
     def load_from_dataframe(cls, dataframe: pd.DataFrame):
@@ -67,20 +74,18 @@ class SearchTerm(models.Model):
                 cost,
                 conversion_value,
                 conversions,
-                search_term
+                search_term,
+                roas
             ) VALUES """
 
         params = []
+        df_cols = df.columns.tolist()
         for row in df.itertuples():
-            params.append(row.date)
-            params.append(row.ad_group_id)
-            params.append(row.clicks)
-            params.append(row.cost)
-            params.append(row.conversion_value)
-            params.append(row.conversions)
-            params.append(row.search_term)
+            for col in df_cols:
+                params.append(getattr(row, col))
+            params.extend([row.conversion_value, row.cost or 1])
             query += """
-                (%s, %s, %s, %s, %s, %s, %s),"""
+                (%s, %s, %s, %s, %s, %s, %s, %s / %s),"""
 
         query = query.strip().rstrip(",")
         query += """
@@ -94,7 +99,7 @@ class SearchTerm(models.Model):
         with connection.cursor() as cursor:
             cursor.execute(query, params)
 
-    def roas(self) -> float:
+    def calc_roas(self) -> float:
         """Calculates the Return On Ad Spend (RoAS) for the search term.
         Returns:
             float: The RoAS for the search term.
