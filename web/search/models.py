@@ -16,7 +16,7 @@ class SearchTerm(models.Model):
     conversion_value = models.DecimalField(max_digits=10, decimal_places=2)
     conversions = models.PositiveIntegerField()
     search_term = models.CharField(max_length=255)
-    roas = models.FloatField(blank=True)
+    roas = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         ordering = ("-date",)
@@ -100,7 +100,7 @@ class SearchTerm(models.Model):
             cursor.execute(query, params)
 
     @classmethod
-    def for_alias(cls, alias: str) -> models.QuerySet['SearchTerm']:
+    def for_alias(cls, alias: str) -> models.QuerySet["SearchTerm"]:
         """Returns a queryset of SearchTerms for a given alias.
 
         Args:
@@ -109,13 +109,12 @@ class SearchTerm(models.Model):
         Returns:
             A queryset of SearchTerms for the given alias.
         """
-        return cls.objects.filter(ad_group__alias=alias)
+        return cls.objects.filter(ad_group__alias__iexact=alias)
 
     @classmethod
     def for_structure_value(
-        cls,
-        structure_value: str
-    ) -> models.QuerySet['SearchTerm']:
+        cls, structure_value: str
+    ) -> models.QuerySet["SearchTerm"]:
         """Returns a queryset of SearchTerms for a given structure value.
 
         Args:
@@ -125,7 +124,7 @@ class SearchTerm(models.Model):
             A queryset of SearchTerms for the given structure value.
         """
         return cls.objects.filter(
-            ad_group__campaign__structure_value=structure_value
+            ad_group__campaign__structure_value__iexact=structure_value
         )
 
     def calc_roas(self) -> float:

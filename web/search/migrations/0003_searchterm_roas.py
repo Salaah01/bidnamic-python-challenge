@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('search', '0002_alter_searchterm_unique_together'),
+        ("search", "0002_alter_searchterm_unique_together"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='searchterm',
-            name='roas',
+            model_name="searchterm",
+            name="roas",
             field=models.FloatField(blank=True, default=0),
             preserve_default=False,
         ),
