@@ -2,6 +2,7 @@ from datetime import date
 from django.test import TransactionTestCase
 import pandas as pd
 from campaigns import models as campaign_models
+from campaigns.tests.utils import get_campaign, get_ad_group
 from .. import models as search_models
 from .utils import get_search_term
 
@@ -12,6 +13,18 @@ class TestSearchTerm(TransactionTestCase):
     def test__str__(self):
         """Test that the method returns a `str` instance."""
         self.assertIsInstance(str(get_search_term()), str)
+
+    def test_save(self):
+        """Test that the `save` method calculates `roas` before saving if
+        roas is not set.
+        """
+        search_term = get_search_term(
+            cost=0.5,
+            conversion_value=2.0,
+            roas=None
+        )
+        search_term.save()
+        self.assertEqual(search_term.roas, 4.0)
 
     def test_calc_roas(self):
         """Test that the method calculates the RoAS for a search term
@@ -90,3 +103,57 @@ class TestSearchTerm(TransactionTestCase):
         self.assertEqual(search_ad_group_100.conversion_value, 2.0)
         self.assertEqual(search_ad_group_100.conversions, 2)
         self.assertEqual(search_ad_group_100.search_term, "b")
+
+    def test_for_alias(self):
+        """Test that the `for_alias` returns the correct queryset."""
+
+        # Load test data.
+        for i in range(1, 5):
+            ad_group = get_ad_group(id=i, alias="odd" if i % 2 else "even")
+            get_search_term(ad_group=ad_group)
+
+        # Run the method.
+        queryset = search_models.SearchTerm.for_alias("odd")
+        self.assertEqual(
+            set(queryset.values_list("ad_group_id", flat=True)),
+            {1, 3}
+        )
+
+        queryset = search_models.SearchTerm.for_alias("even")
+        self.assertEqual(
+            set(queryset.values_list("ad_group_id", flat=True)),
+            {2, 4}
+        )
+
+    def test_for_structure_value(self):
+        """Test that the `for_structure_value` returns the correct queryset."""
+
+        # Load test data.
+        for i in range(1, 5):
+            campaign = get_campaign(
+                id=i,
+                structure_value="odd" if i % 2 else "even"
+            )
+            ad_group = get_ad_group(id=i, campaign=campaign)
+            get_search_term(ad_group=ad_group)
+
+        # Run and test the method.
+        queryset = search_models.SearchTerm.for_structure_value("odd")
+        self.assertEqual(queryset.count(), 2)
+        self.assertEqual(
+            set(queryset.values_list(
+                "ad_group__campaign__structure_value",
+                flat=True
+            )),
+            {'odd'}
+        )
+
+        queryset = search_models.SearchTerm.for_structure_value("even")
+        self.assertEqual(queryset.count(), 2)
+        self.assertEqual(
+            set(queryset.values_list(
+                "ad_group__campaign__structure_value",
+                flat=True
+            )),
+            {'even'}
+        )

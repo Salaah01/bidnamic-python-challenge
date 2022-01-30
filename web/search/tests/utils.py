@@ -15,6 +15,7 @@ def get_search_term(
     conversion_value: float = 1.0,
     conversions: int = 1,
     search_term: str = "test_search_term",
+    roas: float = 1.0,
 ) -> search_models.SearchTerm:
     """Creates (if needed) and returns a `SearchTerm` instance.
 
@@ -26,6 +27,7 @@ def get_search_term(
         conversion_value: The value of the `conversion_value` field.
         conversions: The value of the `conversions` field.
         search_term: The value of the `search_term` field.
+        roas: The value of the `roas` field.
 
     Returns:
         The `SearchTerm` instance.
@@ -38,4 +40,5 @@ def get_search_term(
         conversion_value=conversion_value,
         conversions=conversions,
         search_term=search_term,
+        roas=roas,
     )[0]

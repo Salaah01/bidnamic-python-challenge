@@ -99,6 +99,35 @@ class SearchTerm(models.Model):
         with connection.cursor() as cursor:
             cursor.execute(query, params)
 
+    @classmethod
+    def for_alias(cls, alias: str) -> models.QuerySet['SearchTerm']:
+        """Returns a queryset of SearchTerms for a given alias.
+
+        Args:
+            alias - The alias to search for.
+
+        Returns:
+            A queryset of SearchTerms for the given alias.
+        """
+        return cls.objects.filter(ad_group__alias=alias)
+
+    @classmethod
+    def for_structure_value(
+        cls,
+        structure_value: str
+    ) -> models.QuerySet['SearchTerm']:
+        """Returns a queryset of SearchTerms for a given structure value.
+
+        Args:
+            structure_value - The structure value to search for.
+
+        Returns:
+            A queryset of SearchTerms for the given structure value.
+        """
+        return cls.objects.filter(
+            ad_group__campaign__structure_value=structure_value
+        )
+
     def calc_roas(self) -> float:
         """Calculates the Return On Ad Spend (RoAS) for the search term.
         Returns:
