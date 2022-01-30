@@ -27,7 +27,9 @@ class RemoveDuplicates(CleaningStrategy):
             return (
                 False,
                 "Model missing `DataCleaner.remove_duplicates_subset_fields`  "
-                "attribute.",
+                "attribute. This attribute is required for to know which "
+                "fields to remove duplicates from. "
+                "`remove_duplicates_subset_fields =['field_1', 'field_2']`",
             )
         return True, None
 
@@ -61,7 +63,9 @@ class RenameHeaders(CleaningStrategy):
             return (
                 False,
                 "Model missing `DataCleaner.rename_headers_header_map` "
-                "attribute.",
+                "attribute. This attribute is required to know which fields "
+                "to rename. `rename_headers_header_map` = "
+                "{'old_header': 'new_header'}",
             )
         return True, None
 
@@ -96,7 +100,9 @@ class FilterValidForeignKeys(CleaningStrategy):
         if not can_use:
             return (
                 False,
-                "Model missing `DataCleaner.fk_map` attribute.",
+                "Model missing `DataCleaner.fk_map` attribute. This "
+                "attribute is a dictionary mapping fields to models and "
+                "field: {'field': {'model': Model', 'field': 'field'}\}",
             )
         return True, None
 
@@ -146,7 +152,8 @@ class RemoveColumns(CleaningStrategy):
         if not can_use:
             return (
                 False,
-                "Model missing `DataCleaner.remove_columns` attribute.",
+                "Model missing `DataCleaner.remove_columns` attribute. This "
+                "attribute is a list of columns to remove from the dataframe.",
             )
         return True, None
 
