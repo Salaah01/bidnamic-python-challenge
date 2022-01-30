@@ -1,5 +1,7 @@
 """Unittests for the `methods` module."""
 
+from datetime import date
+from types import SimpleNamespace
 from django.test import SimpleTestCase, TestCase
 from django.contrib.contenttypes.models import ContentType
 import pandas as pd
@@ -81,9 +83,13 @@ class TestRemoveDuplicates(SimpleTestCase):
         )
 
     def test_search_terms(self):
-        """Test that the data for the `SearchTerm` model is cleaned correctly."""
+        """Test that the data for the `SearchTerm` model is cleaned
+        correctly.
+        """
+        today = date.today()
         dataframe = pd.DataFrame(
             {
+                "date": [today, today, today],
                 "ad_group_id": [1, 2, 1],
                 "campaign_id": [1, 1, 1],
                 "search_term": ["a", "a", "a"],
@@ -100,6 +106,7 @@ class TestRemoveDuplicates(SimpleTestCase):
 
         expected_results = pd.DataFrame(
             {
+                "date": [today, today],
                 "ad_group_id": [2, 1],
                 "campaign_id": [1, 1],
                 "search_term": ["a", "a"],
@@ -150,6 +157,35 @@ class TestFilterValidForeignKeys(TestCase):
                 "campaign_id": [50, 100],
             }
         )
+
+        self.assertTrue(
+            results.equals(expected_results),
+            f"\nActual:\n{results}\nExpected:\n{expected_results}",
+        )
+
+
+class RemoveColumns(SimpleTestCase):
+    """Unittests for the `RemoveColumns` class."""
+
+    def test_remove_columns(self):
+        """Test that the `clean` method removes the correct columns."""
+        dataframe = pd.DataFrame(
+            {
+                "a": [1, 2, 3],
+                "b": [1, 2, 3],
+                "c": [1, 2, 3],
+            }
+        )
+
+        model = SimpleNamespace(
+            DataCleaner=SimpleNamespace(remove_columns=["a", "b"])
+        )
+
+        remove_columns = methods.RemoveColumns(dataframe, model)
+        remove_columns.clean()
+        results = remove_columns.dataframe.reset_index(drop=True)
+
+        expected_results = pd.DataFrame({"c": [1, 2, 3]})
 
         self.assertTrue(
             results.equals(expected_results),

@@ -125,3 +125,34 @@ class FilterValidForeignKeys(CleaningStrategy):
                 ].index,
                 inplace=True,
             )
+
+
+class RemoveColumns(CleaningStrategy):
+    """Removes columns from a dataframe."""
+
+    def can_use_cleaner(self) -> _t.Tuple[bool, _t.Union[str, None]]:
+        """Checks if the model can use the cleaner.
+
+        Returns:
+            A tuple containing a boolean indicating if the cleaning strategy
+            can be used and a string containing an error message if the
+            cleaning strategy cannot be used. If the cleaning strategy can be
+            used, the error message will be None.
+        """
+        can_use = super().can_use_cleaner()
+        if not can_use[0]:
+            return can_use
+        can_use = hasattr(self.model.DataCleaner, "remove_columns")
+        if not can_use:
+            return (
+                False,
+                "Model missing `DataCleaner.remove_columns` attribute.",
+            )
+        return True, None
+
+    def clean(self) -> pd.DataFrame:
+        """Executes the cleaning task."""
+        self.validate_model()
+        self.dataframe.drop(
+            self.model.DataCleaner.remove_columns, axis=1, inplace=True
+        )
