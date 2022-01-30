@@ -11,5 +11,10 @@ pandas==1.4.0
 
 # Postgresql driver
 psycopg2==2.9.3
+
 # To be able to read environment variables from .env file
 python-dotenv==0.19.2
+
+# For API documentation.
+PyYAML==6.0
+uritemplate==4.1.1
