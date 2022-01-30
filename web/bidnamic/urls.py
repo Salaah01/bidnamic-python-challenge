@@ -7,21 +7,21 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
-        'raw-schema',
+        "raw-schema",
         get_schema_view(
             title="Bidnamic API",
             description="API for Bidnamic.",
-            version="1.0.0"
+            version="1.0.0",
         ),
-        name='openapi-schema'
+        name="openapi-schema",
     ),
     path(
-        '',
+        "",
         TemplateView.as_view(
-            template_name='swagger-ui.html',
-            extra_context={'schema_url': 'openapi-schema'}
+            template_name="swagger-ui.html",
+            extra_context={"schema_url": "openapi-schema"},
         ),
-        name='swagger-ui'
+        name="swagger-ui",
     ),
     path("search/", include("search.urls")),
 ]

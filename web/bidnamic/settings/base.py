@@ -18,8 +18,8 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Load environment variables from .env file.
-if int(os.getenv('USING_DOCKER', '0')):
-    load_dotenv(os.path.join(BASE_DIR, '.docker.env'))
+if int(os.getenv("USING_DOCKER", "0")):
+    load_dotenv(os.path.join(BASE_DIR, ".docker.env"))
 else:
     load_dotenv()
 
@@ -141,5 +141,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'COERCE_DECIMAL_TO_STRING': False,
+    "COERCE_DECIMAL_TO_STRING": False,
 }

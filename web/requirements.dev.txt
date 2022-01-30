@@ -6,3 +6,6 @@ autopep8==1.6.0
 
 # Linting
 flake8==4.0.1
+
+# Required for use `rest_framework.test.RequestsClient` whilst testing
+requests==2.27.1

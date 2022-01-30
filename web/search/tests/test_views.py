@@ -9,6 +9,7 @@ from rest_framework.test import (
     RequestsClient,
     APILiveServerTestCase,
 )
+from rest_framework.request import Request
 from api import exceptions as api_exceptions
 from .. import views, models as search_models
 from .utils import get_search_term
@@ -32,7 +33,7 @@ class BaseLiveTestCase(APILiveServerTestCase):
         self,
         url: str,
         json_payload: _t.Optional[dict] = None,
-    ) -> RequestsClient.get:
+    ) -> Request:
         """Creates a request object with the given query params and json
         payload.
 
@@ -60,7 +61,7 @@ class TestApplyLimit(APITestCase):
     def get_request(
         query_params: _t.Optional[dict] = None,
         json_payload: _t.Optional[dict] = None,
-    ) -> APIRequestFactory.get:
+    ) -> Request:
         """Creates a request object with the given query params and json
         payload.
 
@@ -152,7 +153,7 @@ class TestRoasByStructuredValue(BaseLiveTestCase):
 
     def get_request(
         self, structured_value: _t.Optional[str] = None, is_json: bool = False
-    ) -> APIRequestFactory.get:
+    ) -> Request:
         """Overrides the `get_request` method by setting the `url` argument
         to the `roas_by_structured_value` view as well as simplifying the
         args making it specific to this test.
