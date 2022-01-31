@@ -102,7 +102,7 @@ class FilterValidForeignKeys(CleaningStrategy):
                 False,
                 "Model missing `DataCleaner.fk_map` attribute. This "
                 "attribute is a dictionary mapping fields to models and "
-                "field: {'field': {'model': Model', 'field': 'field'}\}",
+                "field: {'field': {'model': Model', 'field': 'field'}}",
             )
         return True, None
 
