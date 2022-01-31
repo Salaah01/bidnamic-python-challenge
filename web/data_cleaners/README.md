@@ -37,7 +37,7 @@ As a table, this would look like:
 | 2   | a               | ENABLED  |
 | 1   | a               | DISABLED |
 
-In this data frame, we can see that there are two rows with the same `id` but different values fir `status`.
+In this data frame, we can see that there are two rows with the same `id` but different values for `status`.
 
 As part of our cleaning exercise, we want to keep the latest row of data as this is the most up-to-date.
 
@@ -71,7 +71,7 @@ class Campaign(models.Model):
     class DataCleaner:
         pass
 ```
-This does not seem to do a lot. However, using cleaning strategies require this as this is where each strategy looks for some settings relating to that specific strategy.
+This does not seem to do a lot. However, using cleaning strategies requires this. The `DataCleaner` class is where each strategy looks for some settings relating to that specific strategy.
 
 Running this again will return another error:
 
@@ -93,7 +93,7 @@ class Campaign(models.Model):
 
 This change will ensure that when our cleaning strategy is being applied, it will only remove duplicates based on the `id` field. Without this change, the cleaning strategy would not know which fields to use to remove duplicates.
 
-Please note that most cleaning strategies require additional information in our models. Each strategy will inform you of the fields that it requires.
+Please note that most cleaning strategies require additional information in our models. Each strategy has error handling is place to let you know when the `DataCleaner` class is missing an attribute that it needs.
 
 Now when we run the cleaning function, we will get the following data frame:
 ```python
@@ -115,7 +115,7 @@ In our example we used only one cleaning strategy, but we are free to use as man
 ## Creating Custom Cleaning Strategies
 Let's suppose we want to create a cleaning strategy that removes all rows with a `status` of `DISABLED` on data that we intend to load into the `Campaign` model.
 
-If the strategy is generic and could possibly be used by other apps, it should be placed in `data_cleaners.method.py`. Otherwise, it should be placed in a local app directory. This is to prevent `methods.py` for being cluttered.
+If the strategy is generic and could possibly be used by other apps, it should be placed in `data_cleaners/methods.py`. Otherwise, it should be placed in a local app directory. This is to prevent `methods.py` for becoming cluttered.
 
 For our example, we will create a new file `campaigns/cleaning_methods.py` with the following code:
 ```python
