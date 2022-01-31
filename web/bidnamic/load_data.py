@@ -36,7 +36,7 @@ class LoadDataCommand(BaseCommand):
             _file = input("Enter the path to the CSV file: ")
 
         if not os.path.exists(_file):
-            raise CommandError("File does not exist.")
+            raise CommandError(f"File ({_file}) does not exist.")
 
         return _file
 
